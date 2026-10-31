@@ -1,5 +1,5 @@
 # latex-tempo
-
+![Version](https://img.shields.io/static/v1?label=latex-tempo&message=0.1.1&color=brightcolor)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 Org-tempo style `<key TAB` templates for LaTeX buffers in Emacs.
