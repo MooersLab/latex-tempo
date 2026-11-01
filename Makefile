@@ -3,7 +3,7 @@
 # Targets:
 #   make            byte-compile and run the tests
 #   make compile    byte-compile with warnings treated as errors
-#   make test       run the ERT test suite
+#   make test       byte-compile, then run the ERT test suite
 #   make checkdoc   check documentation strings
 #   make lint       run package-lint (MELPA style checks)
 #   make doc        build doc/latex-tempo.texi and doc/latex-tempo.info
@@ -12,7 +12,9 @@
 #   make clean      remove generated files
 
 EMACS ?= emacs
-BATCH  = $(EMACS) -Q --batch -L .
+# load-prefer-newer makes Emacs load a .el file that is newer than its
+# .elc file, so a stale compiled file never hides recent edits.
+BATCH  = $(EMACS) -Q --batch --eval "(setq load-prefer-newer t)" -L .
 EL     = latex-tempo.el
 TESTS  = test/latex-tempo-test.el
 
@@ -28,7 +30,7 @@ compile:
 	$(BATCH) --eval "(setq byte-compile-error-on-warn t)" \
 	  -f batch-byte-compile $(EL)
 
-test:
+test: compile
 	$(BATCH) -L test -l latex-tempo -l $(TESTS) \
 	  -f ert-run-tests-batch-and-exit
 
