@@ -388,5 +388,65 @@ The first \"|\" in TEXT marks point and is removed."
     (latex-tempo-mode -1)
     (should-not (eq (key-binding (kbd "TAB")) #'latex-tempo-expand-or-tab))))
 
+;;;; Priority over other TAB bindings
+
+(defvar latex-tempo-test--other-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "TAB") #'latex-tempo-test--other-tab)
+    (define-key map (kbd "<tab>") #'latex-tempo-test--other-tab)
+    map)
+  "Keymap of a stand-in for yasnippet or outline-minor-mode.")
+
+(defvar latex-tempo-test--other-called nil
+  "Set to t when the stand-in TAB command runs.")
+
+(defun latex-tempo-test--other-tab ()
+  "Stand-in for another package's TAB command."
+  (interactive)
+  (setq latex-tempo-test--other-called t))
+
+(define-minor-mode latex-tempo-test--other-mode
+  "Minor mode that binds TAB, defined after latex-tempo."
+  :keymap latex-tempo-test--other-mode-map)
+
+(ert-deftest latex-tempo-test-tab-beats-later-minor-mode ()
+  (with-temp-buffer
+    (latex-mode)
+    (latex-tempo-mode 1)
+    (latex-tempo-test--other-mode 1)
+    (should (eq (key-binding (kbd "TAB")) #'latex-tempo-expand-or-tab))
+    (should (eq (key-binding (kbd "<tab>")) #'latex-tempo-expand-or-tab))))
+
+(ert-deftest latex-tempo-test-tab-passes-on-to-other-mode ()
+  (with-temp-buffer
+    (latex-mode)
+    (latex-tempo-mode 1)
+    (latex-tempo-test--other-mode 1)
+    (insert "Plain text")
+    (setq latex-tempo-test--other-called nil)
+    (latex-tempo-expand-or-tab)
+    (should latex-tempo-test--other-called)))
+
+(ert-deftest latex-tempo-test-tab-expands-despite-other-mode ()
+  (with-temp-buffer
+    (latex-mode)
+    (latex-tempo-mode 1)
+    (latex-tempo-test--other-mode 1)
+    (insert "<q")
+    (setq latex-tempo-test--other-called nil)
+    (call-interactively (key-binding (kbd "TAB")))
+    (should-not latex-tempo-test--other-called)
+    (should (equal (buffer-string) "\\begin{quote}\n\n\\end{quote}"))))
+
+(ert-deftest latex-tempo-test-high-priority-off ()
+  (with-temp-buffer
+    (latex-mode)
+    (let ((latex-tempo-high-priority nil))
+      (latex-tempo-mode 1))
+    (should-not latex-tempo--emulation-alist)
+    (latex-tempo-mode -1)
+    (latex-tempo-mode 1)
+    (should latex-tempo--emulation-alist)))
+
 (provide 'latex-tempo-test)
 ;;; latex-tempo-test.el ends here

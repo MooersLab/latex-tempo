@@ -21,7 +21,7 @@
 :COPYING: t
 :END:
 
-This manual is for latex-tempo version 0.4.0.
+This manual is for latex-tempo version 0.4.1.
 
 Copyright \copy 2026 Blaine Mooers.
 
@@ -237,6 +237,9 @@ Run =M-x customize-group RET latex-tempo RET= to see all options.
 - =latex-tempo-default-figure-width= :: The default fraction of =\textwidth=
   for =<f=, initially ="0.8"=.
 - =latex-tempo-add-usepackage= :: See [[*Package checks]].
+- =latex-tempo-high-priority= :: When non-nil, the default, TAB looks for a
+  template key before other minor modes such as yasnippet and
+  =outline-minor-mode=. See [[*Troubleshooting]].
 
 ** Adding your own templates
 #+LATEX: \index{latex-tempo!new templates}
@@ -282,9 +285,14 @@ two-line align environment.
 - TAB does not expand a key :: Check that =latex-tempo-mode= is on, which is
   shown by =<s= in the mode line. Check that only spaces come before the key
   on the line.
-- Another package takes TAB first :: Minor modes such as yasnippet also bind
-  TAB. The minor mode that comes first in =minor-mode-map-alist= wins. Use
-  =C-c C-,= or enable latex-tempo after the other mode.
+- Another package takes TAB first :: Minor modes such as yasnippet and
+  =outline-minor-mode= also bind TAB, and a minor mode loaded later normally
+  wins. latex-tempo avoids this by placing its keymap in
+  =emulation-mode-map-alists=, which Emacs consults before ordinary minor
+  mode keymaps. TAB first checks for a template key. When there is none,
+  TAB runs whatever the other package bound, so yasnippet expansion and
+  outline cycling keep working. Set =latex-tempo-high-priority= to nil to
+  turn this off.
 - minted fails to compile :: minted needs the =-shell-escape= option for
   the LaTeX engine.
 

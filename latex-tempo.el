@@ -4,7 +4,7 @@
 
 ;; Author: Blaine Mooers <blaine-mooers@ou.edu>
 ;; Maintainer: Blaine Mooers <blaine-mooers@ou.edu>
-;; Version: 0.4.0
+;; Version: 0.4.1
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: tex, wp, convenience
 ;; URL: https://github.com/MooersLab/latex-tempo
@@ -207,6 +207,15 @@ more than one letter.  PLIST holds
 (defcustom latex-tempo-default-figure-width "0.8"
   "Default figure width as a fraction of \\textwidth."
   :type 'string)
+
+(defcustom latex-tempo-high-priority t
+  "When non-nil, TAB looks for a template before other minor modes.
+Packages such as yasnippet and `outline-minor-mode' also bind TAB,
+and a minor mode loaded later normally wins.  With this option on,
+latex-tempo checks for a <key first and passes TAB on to the other
+binding when no key is before point.  The option takes effect the
+next time `latex-tempo-mode' is turned on."
+  :type 'boolean)
 
 (defcustom latex-tempo-add-usepackage 'ask
   "Whether to add a missing \\usepackage line to the preamble.
@@ -521,6 +530,13 @@ active region in the same way."
     map)
   "Keymap for `latex-tempo-mode'.")
 
+(defvar latex-tempo--emulation-alist nil
+  "Keymap alist placed in `emulation-mode-map-alists'.
+It holds the mode keymap when `latex-tempo-high-priority' is non-nil,
+so that TAB reaches latex-tempo before other minor mode keymaps.")
+
+(add-to-list 'emulation-mode-map-alists 'latex-tempo--emulation-alist)
+
 ;;;###autoload
 (define-minor-mode latex-tempo-mode
   "Expand Org-style <key templates into LaTeX environments.
@@ -532,7 +548,10 @@ the menu to choose by name.
 
 \\{latex-tempo-mode-map}"
   :lighter " <s"
-  :keymap latex-tempo-mode-map)
+  :keymap latex-tempo-mode-map
+  (setq latex-tempo--emulation-alist
+        (and latex-tempo-high-priority
+             (list (cons 'latex-tempo-mode latex-tempo-mode-map)))))
 
 (provide 'latex-tempo)
 ;;; latex-tempo.el ends here

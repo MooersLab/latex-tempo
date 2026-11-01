@@ -1,5 +1,5 @@
 # latex-tempo
-![Version](https://img.shields.io/static/v1?label=latex-tempo&message=0.4.0&color=brightcolor)
+![Version](https://img.shields.io/static/v1?label=latex-tempo&message=0.4.1&color=brightcolor)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 Org-tempo style `<key TAB` templates for LaTeX buffers in Emacs.
@@ -18,7 +18,7 @@ with a point (cursor) on the empty line. The package works with the built-in `la
 
 - Nineteen short keys for environments, lists, figures, tables, sectioning commands and index entries.
 - Leading indentation is kept.
-- TAB falls back to its usual job when the text before the point is not a key.
+- TAB falls back to its usual job when the text before the point is not a key. This works alongside yasnippet, `outline-minor-mode` and other packages that bind TAB, because latex-tempo looks for a key first and then passes TAB on.
 - `C-c C-,` shows a menu and inserts a template with a single keypress, like `org-insert-structure-template`. Press TAB or SPC in the menu to choose by name with completion instead. Both ways wrap the active region.
 - Templates that need a package (minted, booktabs, graphicx, amssymb, comment) check the preamble and can add the missing `\usepackage` line.
 - The template table is a customizable variable, so you can add your own keys.
@@ -102,6 +102,7 @@ Run `M-x customize-group RET latex-tempo RET`. The main options are
 | `latex-tempo-languages`            | list      | languages offered for completion            |
 | `latex-tempo-default-figure-width` | `"0.8"`   | default fraction of `\textwidth` for `<f`   |
 | `latex-tempo-add-usepackage`       | `ask`     | `nil`, `ask` or `t` for missing packages    |
+| `latex-tempo-high-priority`        | `t`       | check for a key before yasnippet or outline take TAB |
 
 ### Adding a template
 
