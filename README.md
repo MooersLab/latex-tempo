@@ -1,5 +1,5 @@
 # latex-tempo
-
+![Version](https://img.shields.io/static/v1?label=latex-tempo&message=0.4.0&color=brightcolor)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 Org-tempo style `<key TAB` templates for LaTeX buffers in Emacs.
@@ -12,13 +12,13 @@ _
 \end{quote}
 ```
 
-with point on the empty line. The package works with the built-in `latex-mode` and with AUCTeX.
+with a point (cursor) on the empty line. The package works with the built-in `latex-mode` and with AUCTeX.
 
 ## Features
 
 - Nineteen short keys for environments, lists, figures, tables, sectioning commands and index entries.
 - Leading indentation is kept.
-- TAB falls back to its usual job when the text before point is not a key.
+- TAB falls back to its usual job when the text before the point is not a key.
 - `C-c C-,` shows a menu and inserts a template with a single keypress, like `org-insert-structure-template`. Press TAB or SPC in the menu to choose by name with completion instead. Both ways wrap the active region.
 - Templates that need a package (minted, booktabs, graphicx, amssymb, comment) check the preamble and can add the missing `\usepackage` line.
 - The template table is a customizable variable, so you can add your own keys.
@@ -47,7 +47,7 @@ with point on the empty line. The package works with the built-in `latex-mode` a
 | `<p`   | `\paragraph{}`                                          |          |
 | `<x`   | `\index{}`                                              |          |
 
-Keys are case sensitive, so `<i` and `<I` differ.
+Keys are case-sensitive, so `<i` and `<I` differ.
 
 ## Installation
 
@@ -118,7 +118,7 @@ Run `M-x customize-group RET latex-tempo RET`. The main options are
                  :desc "Align, two lines")))
 ```
 
-In a `:template`, `@@` marks where point goes and `<<arg>>` is replaced by a prompted argument. The manual describes every property.
+In a `:template`, `@@` marks where the point goes and `<<arg>>` is replaced by a prompted argument. The manual describes every property.
 
 ## Documentation
 
@@ -151,6 +151,13 @@ Use another Emacs with `make test EMACS=/path/to/emacs`.
 Copyright (C) 2026 Blaine Mooers.
 
 latex-tempo is free software released under the GNU General Public License, version 3 or (at your option) any later version. See [LICENSE](LICENSE). This license is accepted by MELPA.
+
+## Sources of funding
+
+- NIH: R01 CA242845
+- NIH: R01 AI088011
+- NIH: P30 CA225520 (PI: R. Mannel)
+- NIH: P20 GM103640 and P30 GM145423 (PI: A. West)
 
 ## Author
 
