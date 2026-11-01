@@ -21,7 +21,7 @@
 :COPYING: t
 :END:
 
-This manual is for latex-tempo version 0.4.1.
+This manual is for latex-tempo version 0.5.0.
 
 Copyright \copy 2026 Blaine Mooers.
 
@@ -144,7 +144,7 @@ text. Selecting the word =minted= and choosing =x= gives =\index{minted}=.
 | =<k=   | checklist with five boxed items                         | amssymb  |
 | =<I=   | new =\item=                                             |          |
 | =<f=   | figure with =\includegraphics=, prompts for the width   | graphicx |
-| =<t=   | table with five columns, a header row and two data rows | booktabs |
+| =<t=   | table, prompts for the numbers of rows and columns      | booktabs |
 | =<u=   | =\subsection{}=                                         |          |
 | =<y=   | =\subsubsection{}=                                      |          |
 | =<p=   | =\paragraph{}=                                          |          |
@@ -171,24 +171,43 @@ the default of 0.8. Point lands inside the braces for the image file.
 #+CINDEX: table template
 #+CINDEX: booktabs
 
-=<t= inserts a booktabs table with the caption above the tabular, as is
-usual for tables. Point lands in the caption.
+=<t= asks two questions and then inserts a booktabs table with the
+caption above the tabular, as is usual for tables. Point lands in the
+caption.
+
+#+CAPTION: Prompts asked by the table template.
+#+ATTR_LATEX: :booktabs t :center t
+| Prompt                | Meaning                                         | Default |
+|-----------------------+-------------------------------------------------+---------|
+| Number of body rows   | rows below the =\midrule=, header not counted   |       2 |
+| Number of columns     | columns, each left aligned with =l=             |       5 |
+
+Pressing RET accepts the default. An answer that is not a whole number of at
+least 1 is asked again. Pressing =C-g= at either prompt leaves =<t= in the
+buffer unchanged.
+
+Answering 3 rows and 4 columns gives
 
 #+begin_src latex
 \begin{table}[htbp]
   \centering
   \caption{}
   \label{tab:}
-  \begin{tabular}{lllll}
+  \begin{tabular}{llll}
     \toprule
-     &  &  &  &  \\
+     & & & \\
     \midrule
-     &  &  &  &  \\
-     &  &  &  &  \\
+     & & & \\
+     & & & \\
+     & & & \\
     \bottomrule
   \end{tabular}
 \end{table}
 #+end_src
+
+Change the column letters to =c=, =r= or =p{3cm}= after insertion as needed.
+The defaults are set by =latex-tempo-default-table-rows= and
+=latex-tempo-default-table-columns=.
 
 ** Relation to the org-tempo keys
 #+LATEX: \index{org-tempo!comparison}
@@ -234,6 +253,10 @@ Run =M-x customize-group RET latex-tempo RET= to see all options.
 - =latex-tempo-default-language= :: The default minted language, initially
   ="python"=.
 - =latex-tempo-languages= :: The languages offered for completion by =<m=.
+- =latex-tempo-default-table-rows= :: The default number of body rows for
+  =<t=, initially 2.
+- =latex-tempo-default-table-columns= :: The default number of columns for
+  =<t=, initially 5.
 - =latex-tempo-default-figure-width= :: The default fraction of =\textwidth=
   for =<f=, initially ="0.8"=.
 - =latex-tempo-add-usepackage= :: See [[*Package checks]].
@@ -254,9 +277,9 @@ list. Four kinds of entries are supported.
 |-----------------+---------------------------------------------------------|
 | =:env=          | environment name wrapped in =\begin= and =\end=         |
 | =:open= =:close= | literal opening and closing lines                      |
-| =:template=     | list of lines, with =@@= for point and =<<arg>>= for the argument |
+| =:template=     | list of lines, with =@@= for point and =<<arg>>= for the argument, or a function of the argument that returns such a list |
 | =:inline=       | opening string of a one-line command, ended by =:close= |
-| =:arg=          | =language=, =width= or =file= to prompt for an argument |
+| =:arg=          | =language=, =width=, =table-size= or =file= to prompt for an argument |
 | =:first-line=   | extra line just after an =:env= opening line            |
 | =:package=      | LaTeX package that the template needs                   |
 | =:desc=         | description shown in the menu                           |

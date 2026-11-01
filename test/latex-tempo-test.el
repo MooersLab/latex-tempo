@@ -39,6 +39,8 @@ The first \"|\" in TEXT marks point and is removed."
                 (lambda () "python"))
                ((symbol-function 'latex-tempo--read-width)
                 (lambda () "0.5"))
+               ((symbol-function 'latex-tempo--read-table-size)
+                (lambda () (cons 2 5)))
                ((symbol-function 'y-or-n-p) (lambda (&rest _) nil)))
        (let ((latex-tempo-add-usepackage nil)
              (inhibit-message t))
@@ -194,6 +196,98 @@ The first \"|\" in TEXT marks point and is removed."
   (let ((out (latex-tempo-test--expand "    <i")))
     (dolist (l (split-string out "\n"))
       (should (string-prefix-p "    " l)))))
+
+;;;; Table size prompts
+
+(defun latex-tempo-test--table (rows cols)
+  "Expand <t with ROWS body rows and COLS columns; return the state."
+  (latex-tempo-test--with-buffer "<t"
+    (cl-letf (((symbol-function 'latex-tempo--read-table-size)
+               (lambda () (cons rows cols))))
+      (latex-tempo-expand-or-tab))
+    (latex-tempo-test--state)))
+
+(defun latex-tempo-test--table-rows (out)
+  "Return the tabular rows, the lines that end in a double backslash."
+  (cl-remove-if-not (lambda (l) (string-match-p "\\\\\\\\$" l))
+                    (split-string out "\n")))
+
+(ert-deftest latex-tempo-test-table-size-3-by-4 ()
+  (let* ((out (latex-tempo-test--table 3 4))
+         (rows (latex-tempo-test--table-rows out)))
+    (should (string-match-p (regexp-quote "\\begin{tabular}{llll}") out))
+    ;; One header row plus three body rows.
+    (should (= 4 (length rows)))
+    (dolist (r rows)
+      (should (= 3 (cl-count ?& r))))))
+
+(ert-deftest latex-tempo-test-table-size-1-by-1 ()
+  (let* ((out (latex-tempo-test--table 1 1))
+         (rows (latex-tempo-test--table-rows out)))
+    (should (string-match-p (regexp-quote "{tabular}{l}") out))
+    (should (= 2 (length rows)))
+    (dolist (r rows)
+      (should (= 0 (cl-count ?& r))))))
+
+(ert-deftest latex-tempo-test-table-size-large ()
+  (let* ((out (latex-tempo-test--table 10 8))
+         (rows (latex-tempo-test--table-rows out)))
+    (should (string-match-p (regexp-quote "{tabular}{llllllll}") out))
+    (should (= 11 (length rows)))
+    (dolist (r rows)
+      (should (= 7 (cl-count ?& r))))))
+
+(ert-deftest latex-tempo-test-table-structure-order ()
+  (let* ((out (latex-tempo-test--table 2 3))
+         (pos (mapcar (lambda (k) (string-match (regexp-quote k) out))
+                      '("\\begin{table}" "\\caption{|}" "\\label{tab:}"
+                        "\\begin{tabular}" "\\toprule" "\\midrule"
+                        "\\bottomrule" "\\end{tabular}" "\\end{table}"))))
+    (should (cl-every #'integerp pos))
+    (should (equal pos (sort (copy-sequence pos) #'<)))))
+
+(ert-deftest latex-tempo-test-table-defaults ()
+  (cl-letf (((symbol-function 'read-number)
+             (lambda (_prompt default) default)))
+    (let ((latex-tempo-default-table-rows 4)
+          (latex-tempo-default-table-columns 6))
+      (should (equal (latex-tempo--read-table-size) (cons 4 6))))))
+
+(ert-deftest latex-tempo-test-table-prompts-in-order ()
+  (let ((answers (list 3 7))
+        prompts)
+    (cl-letf (((symbol-function 'read-number)
+               (lambda (prompt _default)
+                 (push prompt prompts)
+                 (pop answers))))
+      (should (equal (latex-tempo--read-table-size) (cons 3 7))))
+    (setq prompts (nreverse prompts))
+    (should (string-match-p "rows" (nth 0 prompts)))
+    (should (string-match-p "columns" (nth 1 prompts)))))
+
+(ert-deftest latex-tempo-test-table-rejects-bad-numbers ()
+  (let ((answers (list 0 -2 2.5 4))
+        (calls 0))
+    (cl-letf (((symbol-function 'read-number)
+               (lambda (_prompt _default)
+                 (setq calls (1+ calls))
+                 (pop answers))))
+      (should (= 4 (latex-tempo--read-positive-integer "Rows: " 2))))
+    (should (= 4 calls))))
+
+(ert-deftest latex-tempo-test-table-quit-leaves-key ()
+  (latex-tempo-test--with-buffer "<t"
+    (cl-letf (((symbol-function 'latex-tempo--read-table-size)
+               (lambda () (signal 'quit nil))))
+      (condition-case nil
+          (latex-tempo-expand-or-tab)
+        (quit nil)))
+    (should (equal (buffer-string) "<t"))))
+
+(ert-deftest latex-tempo-test-table-lines-function ()
+  (let ((lines (latex-tempo--table-lines (cons 2 3))))
+    (should (member "  \\caption{@@}" lines))
+    (should (= 1 (cl-count-if (lambda (l) (string-match-p "@@" l)) lines)))))
 
 ;;;; One-line commands
 

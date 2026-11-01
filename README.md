@@ -1,5 +1,5 @@
 # latex-tempo
-![Version](https://img.shields.io/static/v1?label=latex-tempo&message=0.4.1&color=brightcolor)
+![Version](https://img.shields.io/static/v1?label=latex-tempo&message=0.5.0&color=brightcolor)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 Org-tempo style `<key TAB` templates for LaTeX buffers in Emacs.
@@ -41,7 +41,7 @@ with a point (cursor) on the empty line. The package works with the built-in `la
 | `<k`   | checklist with five boxed items                         | amssymb  |
 | `<I`   | new `\item`                                             |          |
 | `<f`   | figure with `\includegraphics`, prompts for the width   | graphicx |
-| `<t`   | table with five columns, a header row and two data rows | booktabs |
+| `<t`   | table, prompts for the numbers of rows and columns      | booktabs |
 | `<u`   | `\subsection{}`                                         |          |
 | `<y`   | `\subsubsection{}`                                      |          |
 | `<p`   | `\paragraph{}`                                          |          |
@@ -101,6 +101,8 @@ Run `M-x customize-group RET latex-tempo RET`. The main options are
 | `latex-tempo-default-language`     | `"python"`| default language for `<m`                   |
 | `latex-tempo-languages`            | list      | languages offered for completion            |
 | `latex-tempo-default-figure-width` | `"0.8"`   | default fraction of `\textwidth` for `<f`   |
+| `latex-tempo-default-table-rows`   | `2`       | default number of body rows for `<t`        |
+| `latex-tempo-default-table-columns`| `5`       | default number of columns for `<t`          |
 | `latex-tempo-add-usepackage`       | `ask`     | `nil`, `ask` or `t` for missing packages    |
 | `latex-tempo-high-priority`        | `t`       | check for a key before yasnippet or outline take TAB |
 

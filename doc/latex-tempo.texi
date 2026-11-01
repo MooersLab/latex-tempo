@@ -7,7 +7,7 @@
 @c %**end of header
 
 @copying
-This manual is for latex-tempo version 0.4.0.
+This manual is for latex-tempo version 0.5.0.
 
 Copyright @copyright{} 2026 Blaine Mooers.
 
@@ -193,8 +193,8 @@ text. Selecting the word @samp{minted} and choosing @samp{x} gives @samp{\index@
 
 @cindex key list
 
-@float Table,org3d8f808
-@multitable {aaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} {aaaaaaaa}
+@float Table,org7722bc4
+@multitable {aaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} {aaaaaaaa}
 @headitem Key
 @tab Result
 @tab Package
@@ -241,7 +241,7 @@ text. Selecting the word @samp{minted} and choosing @samp{x} gives @samp{\index@
 @tab figure with @samp{\includegraphics}, prompts for the width
 @tab graphicx
 @item @samp{<t}
-@tab table with five columns, a header row and two data rows
+@tab table, prompts for the numbers of rows and columns
 @tab booktabs
 @item @samp{<u}
 @tab @samp{\subsection@{@}}
@@ -288,24 +288,51 @@ the default of 0.8. Point lands inside the braces for the image file.
 @cindex table template
 @cindex booktabs
 
-@samp{<t} inserts a booktabs table with the caption above the tabular, as is
-usual for tables. Point lands in the caption.
+@samp{<t} asks two questions and then inserts a booktabs table with the
+caption above the tabular, as is usual for tables. Point lands in the
+caption.
+
+@float Table,orgebc416f
+@multitable {aaaaaaaaaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} {aaaaaaa}
+@headitem Prompt
+@tab Meaning
+@tab Default
+@item Number of body rows
+@tab rows below the @samp{\midrule}, header not counted
+@tab 2
+@item Number of columns
+@tab columns, each left aligned with @samp{l}
+@tab 5
+@end multitable
+@caption{Prompts asked by the table template.}
+@end float
+
+Pressing RET accepts the default. An answer that is not a whole number of at
+least 1 is asked again. Pressing @samp{C-g} at either prompt leaves @samp{<t} in the
+buffer unchanged.
+
+Answering 3 rows and 4 columns gives
 
 @example
 \begin@{table@}[htbp]
   \centering
   \caption@{@}
   \label@{tab:@}
-  \begin@{tabular@}@{lllll@}
+  \begin@{tabular@}@{llll@}
     \toprule
-     &  &  &  &  \\
+     & & & \\
     \midrule
-     &  &  &  &  \\
-     &  &  &  &  \\
+     & & & \\
+     & & & \\
+     & & & \\
     \bottomrule
   \end@{tabular@}
 \end@{table@}
 @end example
+
+Change the column letters to @samp{c}, @samp{r} or @samp{p@{3cm@}} after insertion as needed.
+The defaults are set by @samp{latex-tempo-default-table-rows} and
+@samp{latex-tempo-default-table-columns}.
 
 @node Relation to the org-tempo keys
 @section Relation to the org-tempo keys
@@ -332,7 +359,7 @@ latex-tempo searches the buffer for a matching @samp{\usepackage} or
 When the line is missing and the buffer contains @samp{\begin@{document@}}, the
 behavior depends on @samp{latex-tempo-add-usepackage}.
 
-@float Table,org9339047
+@float Table,org538e24d
 @multitable {aaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
 @headitem Value
 @tab Behavior
@@ -364,11 +391,21 @@ The default minted language, initially
 @samp{"python"}.
 @item @samp{latex-tempo-languages}
 The languages offered for completion by @samp{<m}.
+@item @samp{latex-tempo-default-table-rows}
+The default number of body rows for
+@samp{<t}, initially 2.
+@item @samp{latex-tempo-default-table-columns}
+The default number of columns for
+@samp{<t}, initially 5.
 @item @samp{latex-tempo-default-figure-width}
 The default fraction of @samp{\textwidth}
 for @samp{<f}, initially @samp{"0.8"}.
 @item @samp{latex-tempo-add-usepackage}
 See @ref{Package checks}.
+@item @samp{latex-tempo-high-priority}
+When non-nil, the default, TAB looks for a
+template key before other minor modes such as yasnippet and
+@samp{outline-minor-mode}. See @ref{Troubleshooting}.
 @end table
 
 @menu
@@ -383,8 +420,8 @@ See @ref{Package checks}.
 Each entry in @samp{latex-tempo-templates} is a key string followed by a property
 list. Four kinds of entries are supported.
 
-@float Table,org3b8d83c
-@multitable {aaaaaaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+@float Table,orgd39b449
+@multitable {aaaaaaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
 @headitem Property
 @tab Meaning
 @item @samp{:env}
@@ -392,11 +429,11 @@ list. Four kinds of entries are supported.
 @item @samp{:open} @samp{:close}
 @tab literal opening and closing lines
 @item @samp{:template}
-@tab list of lines, with @samp{@@@@} for point and @samp{<<arg>>} for the argument
+@tab list of lines, with @samp{@@@@} for point and @samp{<<arg>>} for the argument, or a function of the argument that returns such a list
 @item @samp{:inline}
 @tab opening string of a one-line command, ended by @samp{:close}
 @item @samp{:arg}
-@tab @samp{language}, @samp{width} or @samp{file} to prompt for an argument
+@tab @samp{language}, @samp{width}, @samp{table-size} or @samp{file} to prompt for an argument
 @item @samp{:first-line}
 @tab extra line just after an @samp{:env} opening line
 @item @samp{:package}
@@ -435,9 +472,14 @@ Check that @samp{latex-tempo-mode} is on, which is
 shown by @samp{<s} in the mode line. Check that only spaces come before the key
 on the line.
 @item Another package takes TAB first
-Minor modes such as yasnippet also bind
-TAB@. The minor mode that comes first in @samp{minor-mode-map-alist} wins. Use
-@samp{C-c C-,} or enable latex-tempo after the other mode.
+Minor modes such as yasnippet and
+@samp{outline-minor-mode} also bind TAB, and a minor mode loaded later normally
+wins. latex-tempo avoids this by placing its keymap in
+@samp{emulation-mode-map-alists}, which Emacs consults before ordinary minor
+mode keymaps. TAB first checks for a template key. When there is none,
+TAB runs whatever the other package bound, so yasnippet expansion and
+outline cycling keep working. Set @samp{latex-tempo-high-priority} to nil to
+turn this off.
 @item minted fails to compile
 minted needs the @samp{-shell-escape} option for
 the @LaTeX{} engine.
@@ -451,7 +493,7 @@ the @LaTeX{} engine.
 
 The repository includes an ERT test suite and a Makefile.
 
-@float Table,org4af7e2f
+@float Table,org6f718c8
 @multitable {aaaaaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
 @headitem Target
 @tab Action

@@ -4,7 +4,7 @@
 
 ;; Author: Blaine Mooers <blaine-mooers@ou.edu>
 ;; Maintainer: Blaine Mooers <blaine-mooers@ou.edu>
-;; Version: 0.4.1
+;; Version: 0.5.0
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: tex, wp, convenience
 ;; URL: https://github.com/MooersLab/latex-tempo
@@ -55,7 +55,7 @@
 ;; <k     checklist with five boxed items (amssymb package)
 ;; <I     new \item
 ;; <f     figure with \includegraphics (prompts for width, graphicx)
-;; <t     table with five columns and booktabs rules (booktabs package)
+;; <t     booktabs table, prompts for rows and columns (booktabs package)
 ;; <u     \subsection{}
 ;; <y     \subsubsection{}
 ;; <p     \paragraph{}
@@ -154,21 +154,9 @@
                 "  \\label{fig:}"
                 "\\end{figure}")
      :desc "Figure with includegraphics")
-    ("t" :package "booktabs"
-     :template ("\\begin{table}[htbp]"
-                "  \\centering"
-                "  \\caption{@@}"
-                "  \\label{tab:}"
-                "  \\begin{tabular}{lllll}"
-                "    \\toprule"
-                "     &  &  &  &  \\\\"
-                "    \\midrule"
-                "     &  &  &  &  \\\\"
-                "     &  &  &  &  \\\\"
-                "    \\bottomrule"
-                "  \\end{tabular}"
-                "\\end{table}")
-     :desc "Booktabs table, five columns, header and two rows")
+    ("t" :arg table-size :package "booktabs"
+     :template latex-tempo--table-lines
+     :desc "Booktabs table, prompts for rows and columns")
     ;; One-line commands.
     ("I" :inline "\\item " :close ""
      :desc "New item")
@@ -187,8 +175,11 @@ more than one letter.  PLIST holds
   :env         Name of a LaTeX environment to wrap in \\begin and \\end.
   :open :close Literal opening and closing lines, used when :env is absent.
   :template    List of lines.  \"@@\" marks point and \"<<arg>>\" the argument.
+               It may instead be a function that takes the argument and
+               returns such a list.
   :inline      Opening string of a one-line command; :close ends it.
-  :arg         The symbol `language', `width' or `file' to prompt for.
+  :arg         The symbol `language', `width', `table-size' or `file'
+               to prompt for.
   :first-line  Optional line placed just after an :env opening line.
   :package     LaTeX package that the template needs.
   :desc        Short description shown in the menu."
@@ -207,6 +198,15 @@ more than one letter.  PLIST holds
 (defcustom latex-tempo-default-figure-width "0.8"
   "Default figure width as a fraction of \\textwidth."
   :type 'string)
+
+(defcustom latex-tempo-default-table-rows 2
+  "Default number of body rows for the <t table template.
+The header row is added to this number."
+  :type 'natnum)
+
+(defcustom latex-tempo-default-table-columns 5
+  "Default number of columns for the <t table template."
+  :type 'natnum)
 
 (defcustom latex-tempo-high-priority t
   "When non-nil, TAB looks for a template before other minor modes.
@@ -250,6 +250,53 @@ buffer contains \\begin{document}."
             nil 'latex-tempo--width-history latex-tempo-default-figure-width)))
     (if (string-empty-p w) latex-tempo-default-figure-width w)))
 
+(defun latex-tempo--read-positive-integer (prompt default)
+  "Read a positive integer with PROMPT, offering DEFAULT.
+Ask again until the answer is a whole number of at least 1."
+  (let (n)
+    (while (not (and (integerp n) (> n 0)))
+      (setq n (read-number (if n
+                               (format "Please enter a whole number of at least 1. %s"
+                                       prompt)
+                             prompt)
+                           default)))
+    n))
+
+(defun latex-tempo--read-table-size ()
+  "Read the number of body rows and columns for a table.
+Return a cons cell (ROWS . COLUMNS)."
+  (let* ((rows (latex-tempo--read-positive-integer
+                "Number of body rows (header row not counted): "
+                latex-tempo-default-table-rows))
+         (cols (latex-tempo--read-positive-integer
+                "Number of columns: "
+                latex-tempo-default-table-columns)))
+    (cons rows cols)))
+
+(defun latex-tempo--table-row (cols)
+  "Return one empty tabular row with COLS columns."
+  (concat "    " (mapconcat #'identity (make-list cols " ") "&") "\\\\"))
+
+(defun latex-tempo--table-lines (size)
+  "Return the lines of a booktabs table of SIZE.
+SIZE is a cons cell (ROWS . COLUMNS).  ROWS counts the body rows;
+a header row sits above the \\midrule.  Point goes in the caption."
+  (let* ((rows (car size))
+         (cols (cdr size))
+         (row (latex-tempo--table-row cols)))
+    (append (list "\\begin{table}[htbp]"
+                  "  \\centering"
+                  "  \\caption{@@}"
+                  "  \\label{tab:}"
+                  (concat "  \\begin{tabular}{" (make-string cols ?l) "}")
+                  "    \\toprule"
+                  row
+                  "    \\midrule")
+            (make-list rows row)
+            (list "    \\bottomrule"
+                  "  \\end{tabular}"
+                  "\\end{table}"))))
+
 (defun latex-tempo--read-file ()
   "Read a file name and return it relative to the current file.
 A trailing .tex extension is dropped, as \\input expects."
@@ -265,6 +312,7 @@ A trailing .tex extension is dropped, as \\input expects."
   (pcase (plist-get spec :arg)
     ('language (latex-tempo--read-language))
     ('width (latex-tempo--read-width))
+    ('table-size (latex-tempo--read-table-size))
     ('file (latex-tempo--read-file))
     (_ nil)))
 
@@ -331,11 +379,19 @@ Point ends on the body line."
 
 (defun latex-tempo--insert-template (lines arg)
   "Insert the template LINES at point, filling in ARG.
-Point goes to the first \"@@\" marker; later markers are removed."
+LINES is a list of strings, or a function that takes ARG and returns
+one.  In a list of strings, \"<<arg>>\" is replaced by ARG.  Point goes
+to the first \"@@\" marker; later markers are removed."
+  (when (functionp lines)
+    (setq lines (funcall lines arg)
+          arg nil))
   (let* ((ind (latex-tempo--line-prefix))
          (start (point))
          (text (mapconcat
-                (lambda (l) (replace-regexp-in-string "<<arg>>" (or arg "") l t t))
+                (lambda (l)
+                  (if (stringp arg)
+                      (replace-regexp-in-string "<<arg>>" arg l t t)
+                    (replace-regexp-in-string "<<arg>>" "" l t t)))
                 lines (concat "\n" ind)))
          (end nil)
          (pos nil))
@@ -513,9 +569,10 @@ active region in the same way."
     (princ "Type <KEY then TAB at the start of a line.\n\n")
     (dolist (e latex-tempo-templates)
       (let* ((spec (cdr e))
+             (tpl (plist-get spec :template))
              (shown (cond
-                     ((plist-get spec :template)
-                      (car (plist-get spec :template)))
+                     ((functionp tpl) "(built from prompts)")
+                     (tpl (car tpl))
                      ((plist-get spec :inline)
                       (concat (plist-get spec :inline) (plist-get spec :close)))
                      (t (car (latex-tempo--open-close spec nil))))))
