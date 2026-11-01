@@ -1,0 +1,319 @@
+#+TITLE: latex-tempo User Manual
+#+SUBTITLE: Org-tempo style templates for LaTeX buffers
+#+AUTHOR: Blaine Mooers
+#+EMAIL: blaine-mooers@ou.edu
+#+LANGUAGE: en
+#+OPTIONS: toc:t num:t author:t email:t date:nil
+#+LaTeX_HEADER: \usepackage[margin=0.5in]{geometry}
+#+LaTeX_HEADER: \usepackage{booktabs}
+#+LaTeX_HEADER: \usepackage{makeidx}
+#+LaTeX_HEADER: \makeindex
+#+TEXINFO_FILENAME: latex-tempo.info
+#+TEXINFO_DIR_CATEGORY: Emacs
+#+TEXINFO_DIR_TITLE: latex-tempo: (latex-tempo).
+#+TEXINFO_DIR_DESC: Org-tempo style templates for LaTeX buffers.
+#+TEXINFO_DEFFN: t
+
+#+TEXINFO: @insertcopying
+
+* Copying
+:PROPERTIES:
+:COPYING: t
+:END:
+
+This manual is for latex-tempo version 0.4.0.
+
+Copyright \copy 2026 Blaine Mooers.
+
+#+begin_quote
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU General Public License, version 3 or any
+later version published by the Free Software Foundation.
+#+end_quote
+
+* Introduction
+#+LATEX: \index{latex-tempo!purpose}\index{org-tempo}
+#+CINDEX: org-tempo
+#+CINDEX: purpose
+
+Org mode lets you type a short key such as =<s= at the start of a line and
+press TAB to get a structure block. The org-tempo library provides this
+feature. latex-tempo brings the same habit to LaTeX buffers. You type =<q=
+and press TAB, and a quote environment appears with point on the empty
+body line.
+
+An analogy may help. Think of latex-tempo as a phrasebook. The short phrases
+that you already know from Org are translated into the matching LaTeX
+environments when you work in a LaTeX buffer.
+
+The package works with the built-in =latex-mode= and with AUCTeX.
+
+* Installation
+#+LATEX: \index{latex-tempo!installation}
+#+CINDEX: installation
+
+** From MELPA
+#+LATEX: \index{MELPA}
+#+CINDEX: MELPA
+
+When the package is available on MELPA, install it with
+
+#+begin_src emacs-lisp
+(use-package latex-tempo
+  :ensure t
+  :hook ((LaTeX-mode . latex-tempo-mode)
+         (latex-mode . latex-tempo-mode)))
+#+end_src
+
+** From a clone of the repository
+#+LATEX: \index{latex-tempo!manual installation}
+#+CINDEX: manual installation
+
+Clone the repository and add these lines to your init file.
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/path/to/latex-tempo/")
+(require 'latex-tempo)
+(add-hook 'LaTeX-mode-hook #'latex-tempo-mode)   ; AUCTeX
+(add-hook 'latex-mode-hook #'latex-tempo-mode)   ; built-in tex-mode
+#+end_src
+
+To read this manual inside Emacs, run =make doc= and add the =doc= folder to
+=Info-directory-list=.
+
+* Usage
+#+LATEX: \index{latex-tempo!usage}
+#+CINDEX: usage
+
+** Expanding a key with TAB
+#+LATEX: \index{TAB expansion}
+#+CINDEX: TAB expansion
+
+Type =<= and a key at the start of a line, then press TAB. Leading spaces
+are allowed, and the inserted text keeps the same indentation. Keys are case
+sensitive, so =<i= and =<I= give different results. Every built-in key is a
+single character. Keys that you add yourself may be longer, such as =<eq=.
+
+When the text before point is not a known key, TAB does whatever it would do
+without latex-tempo, which is usually indentation.
+
+When a template needs an argument, such as the language for =<m=, the
+prompt appears before the key is removed. Pressing =C-g= at the prompt
+leaves the buffer unchanged.
+
+** Choosing from a menu
+#+LATEX: \index{latex-tempo-insert-structure}
+#+CINDEX: latex-tempo-insert-structure
+#+CINDEX: C-c C-,
+#+CINDEX: latex-tempo-insert-structure-by-name
+
+=C-c C-,= runs =latex-tempo-insert-structure=, which mirrors
+=org-insert-structure-template=. It shows a menu of all templates in a small
+window. Press a single key, such as =u=, to insert that template. The menu
+closes when you press a key or =C-g=.
+
+Press TAB or SPC in the menu to choose by name with completion instead. This
+route also reaches keys longer than one character. The same completion is
+available directly with =M-x latex-tempo-insert-structure-by-name=.
+
+When a region is active, environment templates such as =q= wrap the whole
+lines in the region, and one-line commands such as =x= wrap the selected
+text. Selecting the word =minted= and choosing =x= gives =\index{minted}=.
+
+=M-x latex-tempo-list-templates= shows all keys in a help buffer.
+
+* Templates
+#+LATEX: \index{latex-tempo!key list}
+#+CINDEX: key list
+
+#+CAPTION: Keys provided by latex-tempo.
+#+ATTR_LATEX: :booktabs t :center t
+| Key    | Result                                                  | Package  |
+|--------+---------------------------------------------------------+----------|
+| =<a=   | verbatim environment                                    |          |
+| =<c=   | center environment                                      |          |
+| =<C=   | comment environment                                     | comment  |
+| =<E=   | comment environment with a note line                    | comment  |
+| =<h=   | comment environment with a note line                    | comment  |
+| =<l=   | pair of marker comments for raw LaTeX                   |          |
+| =<q=   | quote environment                                       |          |
+| =<v=   | verbatim environment                                    |          |
+| =<m=   | minted environment, prompts for the language            | minted   |
+| =<e=   | enumerate list with five items                          |          |
+| =<i=   | itemize list with five items                            |          |
+| =<k=   | checklist with five boxed items                         | amssymb  |
+| =<I=   | new =\item=                                             |          |
+| =<f=   | figure with =\includegraphics=, prompts for the width   | graphicx |
+| =<t=   | table with five columns, a header row and two data rows | booktabs |
+| =<u=   | =\subsection{}=                                         |          |
+| =<y=   | =\subsubsection{}=                                      |          |
+| =<p=   | =\paragraph{}=                                          |          |
+| =<x=   | =\index{}=                                              |          |
+
+** The figure template
+#+LATEX: \index{latex-tempo!figure}
+#+CINDEX: figure template
+
+=<f= asks for the width as a fraction of =\textwidth=. Pressing RET accepts
+the default of 0.8. Point lands inside the braces for the image file.
+
+#+begin_src latex
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{}
+  \caption{}
+  \label{fig:}
+\end{figure}
+#+end_src
+
+** The table template
+#+LATEX: \index{latex-tempo!table}\index{booktabs}
+#+CINDEX: table template
+#+CINDEX: booktabs
+
+=<t= inserts a booktabs table with the caption above the tabular, as is
+usual for tables. Point lands in the caption.
+
+#+begin_src latex
+\begin{table}[htbp]
+  \centering
+  \caption{}
+  \label{tab:}
+  \begin{tabular}{lllll}
+    \toprule
+     &  &  &  &  \\
+    \midrule
+     &  &  &  &  \\
+     &  &  &  &  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+#+end_src
+
+** Relation to the org-tempo keys
+#+LATEX: \index{org-tempo!comparison}
+#+CINDEX: org-tempo comparison
+
+Several keys keep their Org meaning, namely =<a=, =<c=, =<C=, =<E=, =<h=,
+=<l= and =<q=. The Org export blocks have no direct LaTeX counterpart, so
+=<E= and =<h= give comment environments that LaTeX skips, and =<l= gives a
+pair of marker comments. Other keys were changed to suit LaTeX writing.
+=<m= replaces the Org =<s= source block, and =<e=, =<i=, =<I= and =<v= now
+give lists, items and verbatim text.
+
+* Package checks
+#+LATEX: \index{usepackage}\index{latex-tempo-add-usepackage}
+#+CINDEX: usepackage
+#+CINDEX: latex-tempo-add-usepackage
+
+Some templates need a LaTeX package. After inserting such a template,
+latex-tempo searches the buffer for a matching =\usepackage= or
+=\RequirePackage= line. Commented lines do not count.
+
+When the line is missing and the buffer contains =\begin{document}=, the
+behavior depends on =latex-tempo-add-usepackage=.
+
+#+CAPTION: Values of latex-tempo-add-usepackage.
+#+ATTR_LATEX: :booktabs t :center t
+| Value | Behavior                                                 |
+|-------+----------------------------------------------------------|
+| =nil= | show a reminder in the echo area                         |
+| =ask= | ask before adding the line (the default)                 |
+| =t=   | add the line just above =\begin{document}= without asking |
+
+In a chapter file without =\begin{document}=, such as a file read with
+=\input=, latex-tempo only shows a reminder.
+
+* Customization
+#+LATEX: \index{latex-tempo!customization}
+#+CINDEX: customization
+
+Run =M-x customize-group RET latex-tempo RET= to see all options.
+
+- =latex-tempo-templates= :: The template table. See [[*Adding your own templates]].
+- =latex-tempo-default-language= :: The default minted language, initially
+  ="python"=.
+- =latex-tempo-languages= :: The languages offered for completion by =<m=.
+- =latex-tempo-default-figure-width= :: The default fraction of =\textwidth=
+  for =<f=, initially ="0.8"=.
+- =latex-tempo-add-usepackage= :: See [[*Package checks]].
+
+** Adding your own templates
+#+LATEX: \index{latex-tempo!new templates}
+#+CINDEX: new templates
+
+Each entry in =latex-tempo-templates= is a key string followed by a property
+list. Four kinds of entries are supported.
+
+#+CAPTION: Properties used in latex-tempo-templates.
+#+ATTR_LATEX: :booktabs t :center t
+| Property        | Meaning                                                 |
+|-----------------+---------------------------------------------------------|
+| =:env=          | environment name wrapped in =\begin= and =\end=         |
+| =:open= =:close= | literal opening and closing lines                      |
+| =:template=     | list of lines, with =@@= for point and =<<arg>>= for the argument |
+| =:inline=       | opening string of a one-line command, ended by =:close= |
+| =:arg=          | =language=, =width= or =file= to prompt for an argument |
+| =:first-line=   | extra line just after an =:env= opening line            |
+| =:package=      | LaTeX package that the template needs                   |
+| =:desc=         | description shown in the menu                           |
+
+This example adds =<eq= for an equation environment and =<al= for a
+two-line align environment.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'latex-tempo
+  (add-to-list 'latex-tempo-templates
+               '("eq" :env "equation" :desc "Equation"))
+  (add-to-list 'latex-tempo-templates
+               '("al" :package "amsmath"
+                 :template ("\\begin{align}"
+                            "  @@ &=  \\\\"
+                            "     &= "
+                            "\\end{align}")
+                 :desc "Align, two lines")))
+#+end_src
+
+* Troubleshooting
+#+LATEX: \index{latex-tempo!troubleshooting}\index{yasnippet}
+#+CINDEX: troubleshooting
+#+CINDEX: yasnippet
+
+- TAB does not expand a key :: Check that =latex-tempo-mode= is on, which is
+  shown by =<s= in the mode line. Check that only spaces come before the key
+  on the line.
+- Another package takes TAB first :: Minor modes such as yasnippet also bind
+  TAB. The minor mode that comes first in =minor-mode-map-alist= wins. Use
+  =C-c C-,= or enable latex-tempo after the other mode.
+- minted fails to compile :: minted needs the =-shell-escape= option for
+  the LaTeX engine.
+
+* Running the tests
+#+LATEX: \index{latex-tempo!tests}\index{ERT}
+#+CINDEX: tests
+#+CINDEX: ERT
+
+The repository includes an ERT test suite and a Makefile.
+
+#+CAPTION: Makefile targets.
+#+ATTR_LATEX: :booktabs t :center t
+| Target          | Action                                            |
+|-----------------+---------------------------------------------------|
+| =make=          | byte-compile and run the tests                    |
+| =make test=     | run the ERT tests                                 |
+| =make checkdoc= | check documentation strings                       |
+| =make lint=     | run package-lint, fetched from GitHub on first use |
+| =make check=    | compile, test, checkdoc and lint                  |
+| =make doc=      | build the Texinfo and Info versions of this manual |
+| =make pdf=      | build a PDF version of this manual                |
+| =make clean=    | remove generated files                            |
+
+Set =EMACS= to test with another Emacs, for example
+=make test EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs=.
+
+* Index
+:PROPERTIES:
+:INDEX: cp
+:END:
+
+#+LATEX: \printindex

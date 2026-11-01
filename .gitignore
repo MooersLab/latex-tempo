@@ -1,0 +1,12 @@
+*.elc
+.package-lint/
+doc/*.info
+doc/*.pdf
+doc/*.tex
+doc/*.aux
+doc/*.log
+doc/*.out
+doc/*.toc
+doc/*.idx
+doc/*.ind
+doc/*.ilg

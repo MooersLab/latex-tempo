@@ -1,0 +1,486 @@
+\input texinfo    @c -*- texinfo -*-
+@c %**start of header
+@setfilename latex-tempo.info
+@settitle latex-tempo User Manual
+@documentencoding UTF-8
+@documentlanguage en
+@c %**end of header
+
+@copying
+This manual is for latex-tempo version 0.4.0.
+
+Copyright @copyright{} 2026 Blaine Mooers.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU General Public License, version 3 or any
+later version published by the Free Software Foundation.
+
+@end quotation
+@end copying
+
+@dircategory Emacs
+@direntry
+* latex-tempo: (latex-tempo). Org-tempo style templates for LaTeX buffers.
+@end direntry
+
+@finalout
+@titlepage
+@title latex-tempo User Manual
+@subtitle Org-tempo style templates for @LaTeX{} buffers
+@author Blaine Mooers (@email{blaine-mooers@@ou.edu})
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top latex-tempo User Manual
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Introduction::
+* Installation::
+* Usage::
+* Templates::
+* Package checks::
+* Customization::
+* Troubleshooting::
+* Running the tests::
+* Index::
+
+@detailmenu
+--- The Detailed Node Listing ---
+
+Installation
+
+* From MELPA::
+* From a clone of the repository::
+
+Usage
+
+* Expanding a key with TAB::
+* Choosing from a menu::
+
+Templates
+
+* The figure template::
+* The table template::
+* Relation to the org-tempo keys::
+
+Customization
+
+* Adding your own templates::
+
+@end detailmenu
+@end menu
+
+@node Introduction
+@chapter Introduction
+
+@cindex org-tempo
+@cindex purpose
+
+Org mode lets you type a short key such as @samp{<s} at the start of a line and
+press TAB to get a structure block. The org-tempo library provides this
+feature. latex-tempo brings the same habit to @LaTeX{} buffers. You type @samp{<q}
+and press TAB, and a quote environment appears with point on the empty
+body line.
+
+An analogy may help. Think of latex-tempo as a phrasebook. The short phrases
+that you already know from Org are translated into the matching @LaTeX{}
+environments when you work in a @LaTeX{} buffer.
+
+The package works with the built-in @samp{latex-mode} and with AUC@TeX{}.
+
+@node Installation
+@chapter Installation
+
+@cindex installation
+
+@menu
+* From MELPA::
+* From a clone of the repository::
+@end menu
+
+@node From MELPA
+@section From MELPA
+
+@cindex MELPA
+
+When the package is available on MELPA, install it with
+
+@lisp
+(use-package latex-tempo
+  :ensure t
+  :hook ((LaTeX-mode . latex-tempo-mode)
+         (latex-mode . latex-tempo-mode)))
+@end lisp
+
+@node From a clone of the repository
+@section From a clone of the repository
+
+@cindex manual installation
+
+Clone the repository and add these lines to your init file.
+
+@lisp
+(add-to-list 'load-path "~/path/to/latex-tempo/")
+(require 'latex-tempo)
+(add-hook 'LaTeX-mode-hook #'latex-tempo-mode)   ; AUCTeX
+(add-hook 'latex-mode-hook #'latex-tempo-mode)   ; built-in tex-mode
+@end lisp
+
+To read this manual inside Emacs, run @samp{make doc} and add the @samp{doc} folder to
+@samp{Info-directory-list}.
+
+@node Usage
+@chapter Usage
+
+@cindex usage
+
+@menu
+* Expanding a key with TAB::
+* Choosing from a menu::
+@end menu
+
+@node Expanding a key with TAB
+@section Expanding a key with TAB
+
+@cindex TAB expansion
+
+Type @samp{<} and a key at the start of a line, then press TAB@. Leading spaces
+are allowed, and the inserted text keeps the same indentation. Keys are case
+sensitive, so @samp{<i} and @samp{<I} give different results. Every built-in key is a
+single character. Keys that you add yourself may be longer, such as @samp{<eq}.
+
+When the text before point is not a known key, TAB does whatever it would do
+without latex-tempo, which is usually indentation.
+
+When a template needs an argument, such as the language for @samp{<m}, the
+prompt appears before the key is removed. Pressing @samp{C-g} at the prompt
+leaves the buffer unchanged.
+
+@node Choosing from a menu
+@section Choosing from a menu
+
+@cindex latex-tempo-insert-structure
+@cindex C-c C-,
+@cindex latex-tempo-insert-structure-by-name
+
+@samp{C-c C-,} runs @samp{latex-tempo-insert-structure}, which mirrors
+@samp{org-insert-structure-template}. It shows a menu of all templates in a small
+window. Press a single key, such as @samp{u}, to insert that template. The menu
+closes when you press a key or @samp{C-g}.
+
+Press TAB or SPC in the menu to choose by name with completion instead. This
+route also reaches keys longer than one character. The same completion is
+available directly with @samp{M-x latex-tempo-insert-structure-by-name}.
+
+When a region is active, environment templates such as @samp{q} wrap the whole
+lines in the region, and one-line commands such as @samp{x} wrap the selected
+text. Selecting the word @samp{minted} and choosing @samp{x} gives @samp{\index@{minted@}}.
+
+@samp{M-x latex-tempo-list-templates} shows all keys in a help buffer.
+
+@node Templates
+@chapter Templates
+
+@cindex key list
+
+@float Table,org3d8f808
+@multitable {aaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} {aaaaaaaa}
+@headitem Key
+@tab Result
+@tab Package
+@item @samp{<a}
+@tab verbatim environment
+@tab 
+@item @samp{<c}
+@tab center environment
+@tab 
+@item @samp{<C}
+@tab comment environment
+@tab comment
+@item @samp{<E}
+@tab comment environment with a note line
+@tab comment
+@item @samp{<h}
+@tab comment environment with a note line
+@tab comment
+@item @samp{<l}
+@tab pair of marker comments for raw @LaTeX{}
+@tab 
+@item @samp{<q}
+@tab quote environment
+@tab 
+@item @samp{<v}
+@tab verbatim environment
+@tab 
+@item @samp{<m}
+@tab minted environment, prompts for the language
+@tab minted
+@item @samp{<e}
+@tab enumerate list with five items
+@tab 
+@item @samp{<i}
+@tab itemize list with five items
+@tab 
+@item @samp{<k}
+@tab checklist with five boxed items
+@tab amssymb
+@item @samp{<I}
+@tab new @samp{\item}
+@tab 
+@item @samp{<f}
+@tab figure with @samp{\includegraphics}, prompts for the width
+@tab graphicx
+@item @samp{<t}
+@tab table with five columns, a header row and two data rows
+@tab booktabs
+@item @samp{<u}
+@tab @samp{\subsection@{@}}
+@tab 
+@item @samp{<y}
+@tab @samp{\subsubsection@{@}}
+@tab 
+@item @samp{<p}
+@tab @samp{\paragraph@{@}}
+@tab 
+@item @samp{<x}
+@tab @samp{\index@{@}}
+@tab 
+@end multitable
+@caption{Keys provided by latex-tempo.}
+@end float
+
+@menu
+* The figure template::
+* The table template::
+* Relation to the org-tempo keys::
+@end menu
+
+@node The figure template
+@section The figure template
+
+@cindex figure template
+
+@samp{<f} asks for the width as a fraction of @samp{\textwidth}. Pressing RET accepts
+the default of 0.8. Point lands inside the braces for the image file.
+
+@example
+\begin@{figure@}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]@{@}
+  \caption@{@}
+  \label@{fig:@}
+\end@{figure@}
+@end example
+
+@node The table template
+@section The table template
+
+@cindex table template
+@cindex booktabs
+
+@samp{<t} inserts a booktabs table with the caption above the tabular, as is
+usual for tables. Point lands in the caption.
+
+@example
+\begin@{table@}[htbp]
+  \centering
+  \caption@{@}
+  \label@{tab:@}
+  \begin@{tabular@}@{lllll@}
+    \toprule
+     &  &  &  &  \\
+    \midrule
+     &  &  &  &  \\
+     &  &  &  &  \\
+    \bottomrule
+  \end@{tabular@}
+\end@{table@}
+@end example
+
+@node Relation to the org-tempo keys
+@section Relation to the org-tempo keys
+
+@cindex org-tempo comparison
+
+Several keys keep their Org meaning, namely @samp{<a}, @samp{<c}, @samp{<C}, @samp{<E}, @samp{<h},
+@samp{<l} and @samp{<q}. The Org export blocks have no direct @LaTeX{} counterpart, so
+@samp{<E} and @samp{<h} give comment environments that @LaTeX{} skips, and @samp{<l} gives a
+pair of marker comments. Other keys were changed to suit @LaTeX{} writing.
+@samp{<m} replaces the Org @samp{<s} source block, and @samp{<e}, @samp{<i}, @samp{<I} and @samp{<v} now
+give lists, items and verbatim text.
+
+@node Package checks
+@chapter Package checks
+
+@cindex usepackage
+@cindex latex-tempo-add-usepackage
+
+Some templates need a @LaTeX{} package. After inserting such a template,
+latex-tempo searches the buffer for a matching @samp{\usepackage} or
+@samp{\RequirePackage} line. Commented lines do not count.
+
+When the line is missing and the buffer contains @samp{\begin@{document@}}, the
+behavior depends on @samp{latex-tempo-add-usepackage}.
+
+@float Table,org9339047
+@multitable {aaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+@headitem Value
+@tab Behavior
+@item @samp{nil}
+@tab show a reminder in the echo area
+@item @samp{ask}
+@tab ask before adding the line (the default)
+@item @samp{t}
+@tab add the line just above @samp{\begin@{document@}} without asking
+@end multitable
+@caption{Values of latex-tempo-add-usepackage.}
+@end float
+
+In a chapter file without @samp{\begin@{document@}}, such as a file read with
+@samp{\input}, latex-tempo only shows a reminder.
+
+@node Customization
+@chapter Customization
+
+@cindex customization
+
+Run @samp{M-x customize-group RET latex-tempo RET} to see all options.
+
+@table @asis
+@item @samp{latex-tempo-templates}
+The template table. See @ref{Adding your own templates}.
+@item @samp{latex-tempo-default-language}
+The default minted language, initially
+@samp{"python"}.
+@item @samp{latex-tempo-languages}
+The languages offered for completion by @samp{<m}.
+@item @samp{latex-tempo-default-figure-width}
+The default fraction of @samp{\textwidth}
+for @samp{<f}, initially @samp{"0.8"}.
+@item @samp{latex-tempo-add-usepackage}
+See @ref{Package checks}.
+@end table
+
+@menu
+* Adding your own templates::
+@end menu
+
+@node Adding your own templates
+@section Adding your own templates
+
+@cindex new templates
+
+Each entry in @samp{latex-tempo-templates} is a key string followed by a property
+list. Four kinds of entries are supported.
+
+@float Table,org3b8d83c
+@multitable {aaaaaaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+@headitem Property
+@tab Meaning
+@item @samp{:env}
+@tab environment name wrapped in @samp{\begin} and @samp{\end}
+@item @samp{:open} @samp{:close}
+@tab literal opening and closing lines
+@item @samp{:template}
+@tab list of lines, with @samp{@@@@} for point and @samp{<<arg>>} for the argument
+@item @samp{:inline}
+@tab opening string of a one-line command, ended by @samp{:close}
+@item @samp{:arg}
+@tab @samp{language}, @samp{width} or @samp{file} to prompt for an argument
+@item @samp{:first-line}
+@tab extra line just after an @samp{:env} opening line
+@item @samp{:package}
+@tab @LaTeX{} package that the template needs
+@item @samp{:desc}
+@tab description shown in the menu
+@end multitable
+@caption{Properties used in latex-tempo-templates.}
+@end float
+
+This example adds @samp{<eq} for an equation environment and @samp{<al} for a
+two-line align environment.
+
+@lisp
+(with-eval-after-load 'latex-tempo
+  (add-to-list 'latex-tempo-templates
+               '("eq" :env "equation" :desc "Equation"))
+  (add-to-list 'latex-tempo-templates
+               '("al" :package "amsmath"
+                 :template ("\\begin@{align@}"
+                            "  @@@@ &=  \\\\"
+                            "     &= "
+                            "\\end@{align@}")
+                 :desc "Align, two lines")))
+@end lisp
+
+@node Troubleshooting
+@chapter Troubleshooting
+
+@cindex troubleshooting
+@cindex yasnippet
+
+@table @asis
+@item TAB does not expand a key
+Check that @samp{latex-tempo-mode} is on, which is
+shown by @samp{<s} in the mode line. Check that only spaces come before the key
+on the line.
+@item Another package takes TAB first
+Minor modes such as yasnippet also bind
+TAB@. The minor mode that comes first in @samp{minor-mode-map-alist} wins. Use
+@samp{C-c C-,} or enable latex-tempo after the other mode.
+@item minted fails to compile
+minted needs the @samp{-shell-escape} option for
+the @LaTeX{} engine.
+@end table
+
+@node Running the tests
+@chapter Running the tests
+
+@cindex tests
+@cindex ERT
+
+The repository includes an ERT test suite and a Makefile.
+
+@float Table,org4af7e2f
+@multitable {aaaaaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+@headitem Target
+@tab Action
+@item @samp{make}
+@tab byte-compile and run the tests
+@item @samp{make test}
+@tab run the ERT tests
+@item @samp{make checkdoc}
+@tab check documentation strings
+@item @samp{make lint}
+@tab run package-lint, fetched from GitHub on first use
+@item @samp{make check}
+@tab compile, test, checkdoc and lint
+@item @samp{make doc}
+@tab build the Texinfo and Info versions of this manual
+@item @samp{make pdf}
+@tab build a PDF version of this manual
+@item @samp{make clean}
+@tab remove generated files
+@end multitable
+@caption{Makefile targets.}
+@end float
+
+Set @samp{EMACS} to test with another Emacs, for example
+@samp{make test EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs}.
+
+@node Index
+@chapter Index
+
+@printindex cp
+
+@bye

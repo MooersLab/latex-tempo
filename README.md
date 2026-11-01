@@ -19,7 +19,7 @@ with point on the empty line. The package works with the built-in `latex-mode` a
 - Nineteen short keys for environments, lists, figures, tables, sectioning commands and index entries.
 - Leading indentation is kept.
 - TAB falls back to its usual job when the text before point is not a key.
-- `C-c C-,` offers the same templates through completion and wraps the active region, like `org-insert-structure-template`.
+- `C-c C-,` shows a menu and inserts a template with a single keypress, like `org-insert-structure-template`. Press TAB or SPC in the menu to choose by name with completion instead. Both ways wrap the active region.
 - Templates that need a package (minted, booktabs, graphicx, amssymb, comment) check the preamble and can add the missing `\usepackage` line.
 - The template table is a customizable variable, so you can add your own keys.
 
@@ -42,8 +42,8 @@ with point on the empty line. The package works with the built-in `latex-mode` a
 | `<I`   | new `\item`                                             |          |
 | `<f`   | figure with `\includegraphics`, prompts for the width   | graphicx |
 | `<t`   | table with five columns, a header row and two data rows | booktabs |
-| `<su`  | `\subsection{}`                                         |          |
-| `<ssu` | `\subsubsection{}`                                      |          |
+| `<u`   | `\subsection{}`                                         |          |
+| `<y`   | `\subsubsection{}`                                      |          |
 | `<p`   | `\paragraph{}`                                          |          |
 | `<x`   | `\index{}`                                              |          |
 
@@ -87,7 +87,8 @@ git clone https://github.com/MooersLab/latex-tempo.git ~/path/to/latex-tempo
 ## Usage
 
 - Type a key such as `<f` at the start of a line and press TAB.
-- Press `C-c C-,` to pick a template by name. Select text first to wrap it.
+- Press `C-c C-,` and then a key, such as `u`, to insert a template from the menu. Select text first to wrap it.
+- Press TAB or SPC in that menu, or run `M-x latex-tempo-insert-structure-by-name`, to choose by name with completion.
 - Run `M-x latex-tempo-list-templates` to see every key.
 
 ## Customization
