@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-11-01 Sun 13:15 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>latex-tempo and org-tempo keys compared</title>
+<meta name="author" content="Blaine Mooers" />
+<meta name="generator" content="Org Mode" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">latex-tempo and org-tempo keys compared</h1>
+<div id="outline-container-org4999d62" class="outline-2">
+<h2 id="org4999d62">latex-tempo keys in LaTeX buffers</h2>
+<div class="outline-text-2" id="text-org4999d62">
+<p>
+\index{latex-tempo!key table}
+</p>
+
+<p>
+These keys come from latex-tempo version 0.5.0. Type the key at the start of
+a line and press TAB, or press <code>C-c C-,</code> and then the key letter. The keys
+are case sensitive.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> Keys provided by latex-tempo version 0.5.0 in LaTeX buffers.</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Key</th>
+<th scope="col" class="org-left">LaTeX result</th>
+<th scope="col" class="org-left">Prompt</th>
+<th scope="col" class="org-left">Point lands</th>
+<th scope="col" class="org-left">Package</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>&lt;a</code></td>
+<td class="org-left"><code>verbatim</code> environment</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;c</code></td>
+<td class="org-left"><code>center</code> environment</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;C</code></td>
+<td class="org-left"><code>comment</code> environment</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">comment</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;E</code></td>
+<td class="org-left"><code>comment</code> environment with a note line</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">comment</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;h</code></td>
+<td class="org-left"><code>comment</code> environment with a note line</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">comment</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;l</code></td>
+<td class="org-left">pair of raw LaTeX marker comments</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;q</code></td>
+<td class="org-left"><code>quote</code> environment</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;v</code></td>
+<td class="org-left"><code>verbatim</code> environment</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">body line</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;m</code></td>
+<td class="org-left"><code>minted</code> environment</td>
+<td class="org-left">language</td>
+<td class="org-left">body line</td>
+<td class="org-left">minted</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;e</code></td>
+<td class="org-left"><code>enumerate</code> list with five items</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">first item</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;i</code></td>
+<td class="org-left"><code>itemize</code> list with five items</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">first item</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;k</code></td>
+<td class="org-left">checklist with five boxed items</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">first item</td>
+<td class="org-left">amssymb</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;I</code></td>
+<td class="org-left">new <code>\item</code></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">after item</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;f</code></td>
+<td class="org-left"><code>figure</code> with <code>\includegraphics</code></td>
+<td class="org-left">width</td>
+<td class="org-left">file name</td>
+<td class="org-left">graphicx</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;t</code></td>
+<td class="org-left"><code>table</code> with booktabs rules</td>
+<td class="org-left">rows, columns</td>
+<td class="org-left">caption</td>
+<td class="org-left">booktabs</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;u</code></td>
+<td class="org-left"><code>\subsection{}</code></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">inside braces</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;y</code></td>
+<td class="org-left"><code>\subsubsection{}</code></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">inside braces</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;p</code></td>
+<td class="org-left"><code>\paragraph{}</code></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">inside braces</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;x</code></td>
+<td class="org-left"><code>\index{}</code></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">inside braces</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+The width prompt for <code>&lt;f</code> defaults to 0.8. The <code>&lt;t</code> prompts default to 2
+body rows and 5 columns.
+</p>
+</div>
+</div>
+<div id="outline-container-orgd90edc8" class="outline-2">
+<h2 id="orgd90edc8">org-tempo keys in Org buffers</h2>
+<div class="outline-text-2" id="text-orgd90edc8">
+<p>
+\index{org-tempo!key table}\index{org-structure-template-alist}
+</p>
+
+<p>
+These keys are the defaults in Org 9.6. Load them with
+<code>(require 'org-tempo)</code>. The block keys come from
+<code>org-structure-template-alist</code> and are also offered by <code>C-c C-,</code>
+(<code>org-insert-structure-template</code>). The keyword keys come from
+<code>org-tempo-keywords-alist</code>. The <code>&lt;I</code> key is defined in org-tempo itself.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> Default org-tempo keys in Org 9.6.</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Key</th>
+<th scope="col" class="org-left">Org result</th>
+<th scope="col" class="org-left">Kind</th>
+<th scope="col" class="org-left">Also on C-c C-,</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>&lt;a</code></td>
+<td class="org-left"><code>#+begin_export ascii</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;c</code></td>
+<td class="org-left"><code>#+begin_center</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;C</code></td>
+<td class="org-left"><code>#+begin_comment</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;e</code></td>
+<td class="org-left"><code>#+begin_example</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;E</code></td>
+<td class="org-left"><code>#+begin_export</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;h</code></td>
+<td class="org-left"><code>#+begin_export html</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;l</code></td>
+<td class="org-left"><code>#+begin_export latex</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;q</code></td>
+<td class="org-left"><code>#+begin_quote</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;s</code></td>
+<td class="org-left"><code>#+begin_src</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;v</code></td>
+<td class="org-left"><code>#+begin_verse</code></td>
+<td class="org-left">block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;L</code></td>
+<td class="org-left"><code>#+latex:</code></td>
+<td class="org-left">keyword</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;H</code></td>
+<td class="org-left"><code>#+html:</code></td>
+<td class="org-left">keyword</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;A</code></td>
+<td class="org-left"><code>#+ascii:</code></td>
+<td class="org-left">keyword</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;i</code></td>
+<td class="org-left"><code>#+index:</code></td>
+<td class="org-left">keyword</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;I</code></td>
+<td class="org-left"><code>#+include:</code></td>
+<td class="org-left">keyword</td>
+<td class="org-left">no</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgc8335f7" class="outline-2">
+<h2 id="orgc8335f7">Side-by-side comparison</h2>
+<div class="outline-text-2" id="text-orgc8335f7">
+<p>
+\index{latex-tempo!comparison with org-tempo}
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 3:</span> Meaning of each key in latex-tempo and in org-tempo.</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Key</th>
+<th scope="col" class="org-left">latex-tempo</th>
+<th scope="col" class="org-left">org-tempo</th>
+<th scope="col" class="org-left">Same purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>&lt;a</code></td>
+<td class="org-left">verbatim environment</td>
+<td class="org-left">export ascii block</td>
+<td class="org-left">close</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;c</code></td>
+<td class="org-left">center environment</td>
+<td class="org-left">center block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;C</code></td>
+<td class="org-left">comment environment</td>
+<td class="org-left">comment block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;e</code></td>
+<td class="org-left">enumerate list, five items</td>
+<td class="org-left">example block</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;E</code></td>
+<td class="org-left">comment with a note line</td>
+<td class="org-left">export block</td>
+<td class="org-left">close</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;f</code></td>
+<td class="org-left">figure</td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;h</code></td>
+<td class="org-left">comment with a note line</td>
+<td class="org-left">export html block</td>
+<td class="org-left">close</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;i</code></td>
+<td class="org-left">itemize list, five items</td>
+<td class="org-left"><code>#+index:</code> keyword</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;I</code></td>
+<td class="org-left">new <code>\item</code></td>
+<td class="org-left"><code>#+include:</code> keyword</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;k</code></td>
+<td class="org-left">checklist, five items</td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;l</code></td>
+<td class="org-left">raw LaTeX marker comments</td>
+<td class="org-left">export latex block</td>
+<td class="org-left">close</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;m</code></td>
+<td class="org-left">minted environment</td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;p</code></td>
+<td class="org-left"><code>\paragraph{}</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;q</code></td>
+<td class="org-left">quote environment</td>
+<td class="org-left">quote block</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;s</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left">src block</td>
+<td class="org-left">moved to <code>&lt;m</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;t</code></td>
+<td class="org-left">booktabs table</td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;u</code></td>
+<td class="org-left"><code>\subsection{}</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;v</code></td>
+<td class="org-left">verbatim environment</td>
+<td class="org-left">verse block</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;x</code></td>
+<td class="org-left"><code>\index{}</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;y</code></td>
+<td class="org-left"><code>\subsubsection{}</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left">new</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;A</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left"><code>#+ascii:</code> keyword</td>
+<td class="org-left">Org only</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;H</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left"><code>#+html:</code> keyword</td>
+<td class="org-left">Org only</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;L</code></td>
+<td class="org-left">(none)</td>
+<td class="org-left"><code>#+latex:</code> keyword</td>
+<td class="org-left">Org only</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Four keys have the same purpose in both packages, namely <code>&lt;c</code>, <code>&lt;C</code>, <code>&lt;q</code>
+and the source block, which is <code>&lt;s</code> in Org and <code>&lt;m</code> in latex-tempo. Four
+keys change meaning between the two, namely <code>&lt;e</code>, <code>&lt;i</code>, <code>&lt;I</code> and <code>&lt;v</code>. The
+<code>&lt;s</code> key does nothing in latex-tempo. These differences are worth
+remembering when you switch between Org and LaTeX buffers.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Blaine Mooers</p>
+<p class="date">Created: 2026-11-01 Sun 13:15</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

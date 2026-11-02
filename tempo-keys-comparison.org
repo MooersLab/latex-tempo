@@ -1,0 +1,105 @@
+#+TITLE: latex-tempo and org-tempo keys compared
+#+AUTHOR: Blaine Mooers
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_HEADER: \usepackage[margin=0.5in]{geometry}
+#+LaTeX_HEADER: \usepackage{booktabs}
+
+* latex-tempo keys in LaTeX buffers
+\index{latex-tempo!key table}
+
+These keys come from latex-tempo version 0.5.0. Type the key at the start of
+a line and press TAB, or press =C-c C-,= and then the key letter. The keys
+are case sensitive.
+
+#+CAPTION: Keys provided by latex-tempo version 0.5.0 in LaTeX buffers.
+#+ATTR_LATEX: :booktabs t :center t
+| Key  | LaTeX result                             | Prompt        | Point lands   | Package  |
+|------+------------------------------------------+---------------+---------------+----------|
+| =<a= | =verbatim= environment                   |               | body line     |          |
+| =<c= | =center= environment                     |               | body line     |          |
+| =<C= | =comment= environment                    |               | body line     | comment  |
+| =<E= | =comment= environment with a note line   |               | body line     | comment  |
+| =<h= | =comment= environment with a note line   |               | body line     | comment  |
+| =<l= | pair of raw LaTeX marker comments        |               | body line     |          |
+| =<q= | =quote= environment                      |               | body line     |          |
+| =<v= | =verbatim= environment                   |               | body line     |          |
+| =<m= | =minted= environment                     | language      | body line     | minted   |
+| =<e= | =enumerate= list with five items         |               | first item    |          |
+| =<i= | =itemize= list with five items           |               | first item    |          |
+| =<k= | checklist with five boxed items          |               | first item    | amssymb  |
+| =<I= | new =\item=                              |               | after item    |          |
+| =<f= | =figure= with =\includegraphics=         | width         | file name     | graphicx |
+| =<t= | =table= with booktabs rules              | rows, columns | caption       | booktabs |
+| =<u= | =\subsection{}=                          |               | inside braces |          |
+| =<y= | =\subsubsection{}=                       |               | inside braces |          |
+| =<p= | =\paragraph{}=                           |               | inside braces |          |
+| =<x= | =\index{}=                               |               | inside braces |          |
+
+The width prompt for =<f= defaults to 0.8. The =<t= prompts default to 2
+body rows and 5 columns.
+
+* org-tempo keys in Org buffers
+\index{org-tempo!key table}\index{org-structure-template-alist}
+
+These keys are the defaults in Org 9.6. Load them with
+=(require 'org-tempo)=. The block keys come from
+=org-structure-template-alist= and are also offered by =C-c C-,=
+(=org-insert-structure-template=). The keyword keys come from
+=org-tempo-keywords-alist=. The =<I= key is defined in org-tempo itself.
+
+#+CAPTION: Default org-tempo keys in Org 9.6.
+#+ATTR_LATEX: :booktabs t :center t
+| Key  | Org result               | Kind    | Also on C-c C-, |
+|------+--------------------------+---------+-----------------|
+| =<a= | =#+begin_export ascii=   | block   | yes             |
+| =<c= | =#+begin_center=         | block   | yes             |
+| =<C= | =#+begin_comment=        | block   | yes             |
+| =<e= | =#+begin_example=        | block   | yes             |
+| =<E= | =#+begin_export=         | block   | yes             |
+| =<h= | =#+begin_export html=    | block   | yes             |
+| =<l= | =#+begin_export latex=   | block   | yes             |
+| =<q= | =#+begin_quote=          | block   | yes             |
+| =<s= | =#+begin_src=            | block   | yes             |
+| =<v= | =#+begin_verse=          | block   | yes             |
+| =<L= | =#+latex:=               | keyword | no              |
+| =<H= | =#+html:=                | keyword | no              |
+| =<A= | =#+ascii:=               | keyword | no              |
+| =<i= | =#+index:=               | keyword | no              |
+| =<I= | =#+include:=             | keyword | no              |
+
+* Side-by-side comparison
+\index{latex-tempo!comparison with org-tempo}
+
+#+CAPTION: Meaning of each key in latex-tempo and in org-tempo.
+#+ATTR_LATEX: :booktabs t :center t
+| Key  | latex-tempo                  | org-tempo              | Same purpose |
+|------+------------------------------+------------------------+--------------|
+| =<a= | verbatim environment         | export ascii block     | close        |
+| =<c= | center environment           | center block           | yes          |
+| =<C= | comment environment          | comment block          | yes          |
+| =<e= | enumerate list, five items   | example block          | no           |
+| =<E= | comment with a note line     | export block           | close        |
+| =<f= | figure                       | (none)                 | new          |
+| =<h= | comment with a note line     | export html block      | close        |
+| =<i= | itemize list, five items     | =#+index:= keyword     | no           |
+| =<I= | new =\item=                  | =#+include:= keyword   | no           |
+| =<k= | checklist, five items        | (none)                 | new          |
+| =<l= | raw LaTeX marker comments    | export latex block     | close        |
+| =<m= | minted environment           | (none)                 | new          |
+| =<p= | =\paragraph{}=               | (none)                 | new          |
+| =<q= | quote environment            | quote block            | yes          |
+| =<s= | (none)                       | src block              | moved to =<m= |
+| =<t= | booktabs table               | (none)                 | new          |
+| =<u= | =\subsection{}=              | (none)                 | new          |
+| =<v= | verbatim environment         | verse block            | no           |
+| =<x= | =\index{}=                   | (none)                 | new          |
+| =<y= | =\subsubsection{}=           | (none)                 | new          |
+| =<A= | (none)                       | =#+ascii:= keyword     | Org only     |
+| =<H= | (none)                       | =#+html:= keyword      | Org only     |
+| =<L= | (none)                       | =#+latex:= keyword     | Org only     |
+
+Four keys have the same purpose in both packages, namely =<c=, =<C=, =<q=
+and the source block, which is =<s= in Org and =<m= in latex-tempo. Four
+keys change meaning between the two, namely =<e=, =<i=, =<I= and =<v=. The
+=<s= key does nothing in latex-tempo. These differences are worth
+remembering when you switch between Org and LaTeX buffers.
